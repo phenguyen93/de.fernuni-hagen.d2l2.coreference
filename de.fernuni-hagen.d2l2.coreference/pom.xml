@@ -19,6 +19,17 @@
 
   <dependencies>
   	<dependency>
+    	<groupId>edu.stanford.nlp</groupId>
+    	<artifactId>stanford-corenlp</artifactId>
+    	<version>4.4.0</version>
+	</dependency>
+	<dependency>
+    	<groupId>edu.stanford.nlp</groupId>
+    	<artifactId>stanford-corenlp</artifactId>
+    	<version>4.4.0</version>
+    	<classifier>models</classifier>
+	</dependency>
+  	<dependency>
 		<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
 		<artifactId>de.tudarmstadt.ukp.dkpro.core.io.xmi-asl</artifactId>
 		<version>1.10.0</version>
