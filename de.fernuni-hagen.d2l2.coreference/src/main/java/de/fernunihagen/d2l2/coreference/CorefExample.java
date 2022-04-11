@@ -6,7 +6,6 @@ import java.util.Properties;
 import edu.stanford.nlp.coref.CorefCoreAnnotations;
 import edu.stanford.nlp.coref.data.CorefChain;
 import edu.stanford.nlp.coref.data.Mention;
-import edu.stanford.nlp.coref.neural.NeuralCorefProperties;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
@@ -18,9 +17,9 @@ public class CorefExample {
   public static void main(String[] args) throws Exception{
 	  
     Annotation document = new Annotation("John gives Paul a book. He thinks that he might like it.");
-    NeuralCorefProperties np = new NeuralCorefProperties();
     Properties props = new Properties();
-    props.setProperty("annotators", "tokenize,ssplit,pos,lemma,ner,parse,coref");
+//    props.setProperty("annotators", "tokenize,ssplit,pos,lemma,ner,parse,coref");
+//    props.setProperty("algorithm", "neural");
     StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
     pipeline.annotate(document);
     System.out.println("---");
