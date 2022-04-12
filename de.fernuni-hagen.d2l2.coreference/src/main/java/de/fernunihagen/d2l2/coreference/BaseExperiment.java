@@ -31,9 +31,9 @@ public class BaseExperiment {
 private static void preprocess() throws ResourceInitializationException, UIMAException, IOException {
 		
 		
-		  //CorefExampleReader // TODO: adjust path  
+		  //CorefExampleReader // TODO: adjust paths  
 		String documentPath ="D:\\\\HIWI\\\\Kickoff\\\\CorefExample.xlsx";
-		String outputPath = "";
+		String outputPath = "D:\\HIWI\\coref\\output\\dkpro\\CorefDeterministic.txt";
 		CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
 		  CorefReader.class, CorefReader.PARAM_INPUT_FILE, documentPath);
 		AnalysisEngineDescription posTagger = createEngineDescription(CoreNlpPosTagger.class,
@@ -47,7 +47,7 @@ private static void preprocess() throws ResourceInitializationException, UIMAExc
 		AnalysisEngineDescription chunker = createEngineDescription(OpenNlpChunker.class,
 				OpenNlpChunker.PARAM_LANGUAGE, "en");
 		AnalysisEngineDescription coreferenceResolver = createEngineDescription(CoreNlpCoreferenceResolver.class);
-		AnalysisEngineDescription analyzer = createEngineDescription(Analyzer.class);
+		AnalysisEngineDescription analyzer = createEngineDescription(Analyzer.class,Analyzer.PARAM_OUTPUT_FILE,outputPath);
 		AnalysisEngineDescription binCasWriter = createEngineDescription(
 				BinaryCasWriter.class, 
 				BinaryCasWriter.PARAM_FORMAT, "6+",

@@ -49,6 +49,10 @@ import nu.xom.Builder;
 
 public class Analyzer extends JCasAnnotator_ImplBase {
 	
+	public static final String PARAM_OUTPUT_FILE = "outputFile";
+	@ConfigurationParameter(name = PARAM_OUTPUT_FILE, mandatory = true)
+	protected String outputFile;
+	
 	static Map<String, Object[]> data; 
 	static Map<String, Object[]> fdata; 
 	int index = 1;	
@@ -92,13 +96,13 @@ public class Analyzer extends JCasAnnotator_ImplBase {
 	public void destroy() {
 		// TODO Auto-generated method stub
 		super.destroy();
-	//	export(sb1.toString());
+		export(sb1.toString(),outputFile);
 		
 	}
-	public static void export(String str) {
+	public static void export(String str,String outputPath) {
 		BufferedWriter writer = null;
 		try{
-		    writer = new BufferedWriter( new FileWriter("D:\\\\HIWI\\\\Kickoff\\\\result.txt"));
+		    writer = new BufferedWriter( new FileWriter(outputPath));
 		    writer.write(str);
 		    }
 		catch ( IOException e){
