@@ -6,7 +6,7 @@ There are also three different reference systems available in CoreNLP (CoreNLP i
 - Statistical: Machine-learning-based coreference resolution for English. Unlike the other systems, this one only requires dependency parses, which are faster to produce than constituency parses.
 - Neural: Most accurate but slow neural-network-based coreference resolution for English and Chinese.
 
-(see https://stanfordnlp.github.io/CoreNLP/coref.html#api for more informations). 
+(see https://stanfordnlp.github.io/CoreNLP/coref.html for more informations). 
 So, we will test all 3 systems on short examples to see the difference between them.
 # Usage
 ## First Steps
