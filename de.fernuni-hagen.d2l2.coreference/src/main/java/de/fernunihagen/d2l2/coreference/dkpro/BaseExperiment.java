@@ -1,4 +1,4 @@
-package de.fernunihagen.d2l2.coreference;
+package de.fernunihagen.d2l2.coreference.dkpro;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
@@ -46,8 +46,9 @@ private static void preprocess() throws ResourceInitializationException, UIMAExc
 		AnalysisEngineDescription parser = createEngineDescription(OpenNlpParser.class,OpenNlpParser.PARAM_LANGUAGE,"en");
 		AnalysisEngineDescription chunker = createEngineDescription(OpenNlpChunker.class,
 				OpenNlpChunker.PARAM_LANGUAGE, "en");
-		AnalysisEngineDescription coreferenceResolver = createEngineDescription(CoreNlpCoreferenceResolver.class);
-		AnalysisEngineDescription analyzer = createEngineDescription(Analyzer.class,Analyzer.PARAM_OUTPUT_FILE,outputPath);
+//		AnalysisEngineDescription coreferenceResolver = createEngineDescription(CoreNlpCoreferenceResolver.class);		
+//		AnalysisEngineDescription analyzer = createEngineDescription(Analyzer.class,Analyzer.PARAM_OUTPUT_FILE,outputPath);
+		AnalysisEngineDescription stanfordAnnotator = createEngineDescription(StanfordCoreferenceUIMAAnnotator.class,StanfordCoreferenceUIMAAnnotator.PARAM_OUTPUT_FILE,outputPath);
 		AnalysisEngineDescription binCasWriter = createEngineDescription(
 				BinaryCasWriter.class, 
 				BinaryCasWriter.PARAM_FORMAT, "6+",
@@ -67,12 +68,7 @@ private static void preprocess() throws ResourceInitializationException, UIMAExc
 				lemmatizer,
 				entityRecognizer,
 				parser,
-				coreferenceResolver,
-				analyzer
-	//				chunker,
-				
-	//			xmiWriter,
-	//			binCasWriter
+				stanfordAnnotator
 				);
 	}
 

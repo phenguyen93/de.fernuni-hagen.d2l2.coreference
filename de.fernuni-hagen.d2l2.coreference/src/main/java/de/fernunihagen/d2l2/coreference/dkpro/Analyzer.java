@@ -1,4 +1,4 @@
-package de.fernunihagen.d2l2.coreference;
+package de.fernunihagen.d2l2.coreference.dkpro;
 
 import java.io.BufferedWriter;
 import java.io.File;
