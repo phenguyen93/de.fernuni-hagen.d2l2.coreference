@@ -1,19 +1,14 @@
 package de.fernunihagen.d2l2.io;
 
+import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.uima.UimaContext;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.fit.component.JCasCollectionReader_ImplBase;
@@ -69,25 +64,25 @@ public class CorefReader extends JCasCollectionReader_ImplBase {
 		
 		try {
 			inputFileURL = ResourceUtils.resolveLocation(inputFileString, this, aContext);
-			
-			FileInputStream file = new FileInputStream(new File(inputFileURL.getPath()));
-
-			// Create Workbook instance holding reference to .xlsx file
-			XSSFWorkbook workbook = new XSSFWorkbook(file);			
-			XSSFSheet sheet = workbook.getSheetAt(0);
-			int rowNum = sheet.getLastRowNum() + 1;
-			String inputText = "";
-			index = 1;
-			for (int j = 0; j < rowNum; j++) {	
-				inputText =    readCellData(j, 0, inputFileURL.getPath(),0);						
-				items.add(new QueueItem(index, inputText));	
-				index++;
+			File file = new File(inputFileString);
+			FileReader fr = new FileReader(file);
+			BufferedReader br = new BufferedReader(fr);
+			String line = " ";
+			String[] tempArr;
+			while ((line = br.readLine()) != null){
+				tempArr = line.split(";");
+				String id =tempArr[0];
+				String text = tempArr[1];
+				items.add(new QueueItem(id, text));
 			}
-							
-									            
-		} catch (Exception e) {
-			throw new ResourceInitializationException(e);
-		}
+			
+	      	br.close();
+	    }
+	    catch(IOException ioe) {
+	      ioe.printStackTrace();
+	    }
+		//delete label in list
+		items.remove();
 		currentIndex = 0;
 	}
 	// HOTFIX for Issue 445 in DKPro Core
@@ -118,7 +113,7 @@ public class CorefReader extends JCasCollectionReader_ImplBase {
 			
 			DocumentMetaData dmd = DocumentMetaData.create(jcas);
 			//TODO: The name of the getters und setters must be meaningful
-			dmd.setDocumentId(String.valueOf(item.getId()));
+			dmd.setDocumentId(item.getId());
 			dmd.setDocumentTitle(item.getText());			
 		}
 
@@ -136,46 +131,20 @@ public class CorefReader extends JCasCollectionReader_ImplBase {
 		currentIndex++;
 	}
 	
-	//read value of a cell in excel with given row and column values
-	public static String readCellData(int row, int column, String path, int sheetNumber ) {
-		String value = null;
-		Workbook wb = null;
-		try {
-			// reading data from a file in the form of bytes
-			FileInputStream fis=new FileInputStream(path);  
-			// constructs an XSSFWorkbook object, by buffering the whole stream into the
-			// memory
-			wb = new XSSFWorkbook(fis);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-
-		Sheet sheet = wb.getSheetAt(sheetNumber); // getting the XSSFSheet object at given index
-		Row row1 = sheet.getRow(row); // returns the logical row
-		Cell cell = row1.getCell(column); // getting the cell representing the given column
-		if(cell == null||row1 == null) {
-			value = ""; // getting cell value
-		}else {
-			value = cell.getStringCellValue();
-		}
-				return value; // returns the cell value
-	}
 	
 	class QueueItem{
-		private int id;
+		private String id;
 		private String text;
 		
-		public QueueItem(int id, String text) {
+		public QueueItem(String id, String text) {
 			super();
 			this.id = id;
 			this.text = text;
 		}
-		public int getId() {
+		public String getId() {
 			return id;
 		}
-		public void setId(int id) {
+		public void setId(String id) {
 			this.id = id;
 		}
 		public String getText() {

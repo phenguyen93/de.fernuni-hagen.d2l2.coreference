@@ -28,11 +28,10 @@ public class BaseExperiment {
 		preprocess();
 
 	}
-private static void preprocess() throws ResourceInitializationException, UIMAException, IOException {
-		
-		
+	private static void preprocess() throws ResourceInitializationException, UIMAException, IOException {
+
 		  //CorefExampleReader // TODO: adjust paths  
-		String documentPath ="D:\\\\HIWI\\\\Kickoff\\\\CorefExample.xlsx";
+		String documentPath ="D:\\HIWI\\coref\\ExampleTexts.csv";
 		String outputPath = "D:\\HIWI\\coref\\output\\dkpro\\CorefDeterministic.txt";
 		CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
 		  CorefReader.class, CorefReader.PARAM_INPUT_FILE, documentPath);
@@ -55,19 +54,14 @@ private static void preprocess() throws ResourceInitializationException, UIMAExc
 				BinaryCasWriter.PARAM_OVERWRITE, true,
 				BinaryCasWriter.PARAM_TARGET_LOCATION, "target/bincas"
 				);
-		AnalysisEngineDescription xmiWriter = createEngineDescription(
-				XmiWriter.class, 
-				XmiWriter.PARAM_OVERWRITE, true,
-				XmiWriter.PARAM_TARGET_LOCATION, "target/cas"
-				);
-	
-	
 		SimplePipeline.runPipeline(reader, 
 				seg, 
 				posTagger,
 				lemmatizer,
 				entityRecognizer,
 				parser,
+//				coreferenceResolver,
+//				analyzer
 				stanfordAnnotator
 				);
 	}
