@@ -10,6 +10,7 @@ import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.pipeline.SimplePipeline;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.dkpro.core.stanfordnlp.neural.StanfordCoreferenceResolver;
 
 import de.fernunihagen.d2l2.io.CorefReader;
 import de.tudarmstadt.ukp.dkpro.core.corenlp.CoreNlpCoreferenceResolver;
@@ -45,8 +46,9 @@ public class BaseExperiment {
 		AnalysisEngineDescription parser = createEngineDescription(OpenNlpParser.class,OpenNlpParser.PARAM_LANGUAGE,"en");
 		AnalysisEngineDescription chunker = createEngineDescription(OpenNlpChunker.class,
 				OpenNlpChunker.PARAM_LANGUAGE, "en");
+		AnalysisEngineDescription coreferenceResolver = createEngineDescription(StanfordCoreferenceResolver.class);
 //		AnalysisEngineDescription coreferenceResolver = createEngineDescription(CoreNlpCoreferenceResolver.class);		
-//		AnalysisEngineDescription analyzer = createEngineDescription(Analyzer.class,Analyzer.PARAM_OUTPUT_FILE,outputPath);
+		AnalysisEngineDescription analyzer = createEngineDescription(Analyzer.class,Analyzer.PARAM_OUTPUT_FILE,outputPath);
 		AnalysisEngineDescription stanfordAnnotator = createEngineDescription(StanfordCoreferenceUIMAAnnotator.class,StanfordCoreferenceUIMAAnnotator.PARAM_OUTPUT_FILE,outputPath);
 		AnalysisEngineDescription binCasWriter = createEngineDescription(
 				BinaryCasWriter.class, 
@@ -55,14 +57,14 @@ public class BaseExperiment {
 				BinaryCasWriter.PARAM_TARGET_LOCATION, "target/bincas"
 				);
 		SimplePipeline.runPipeline(reader, 
-//				seg, 
-//				posTagger,
-//				lemmatizer,
-//				entityRecognizer,
-//				parser,
-//				coreferenceResolver,
-//				analyzer
-				stanfordAnnotator
+				seg, 
+				posTagger,
+				lemmatizer,
+				entityRecognizer,
+				parser,
+				coreferenceResolver,
+				analyzer
+//				stanfordAnnotator
 				);
 	}
 
