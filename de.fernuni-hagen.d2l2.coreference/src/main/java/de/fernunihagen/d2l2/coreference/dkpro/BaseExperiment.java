@@ -55,11 +55,11 @@ public class BaseExperiment {
 				BinaryCasWriter.PARAM_TARGET_LOCATION, "target/bincas"
 				);
 		SimplePipeline.runPipeline(reader, 
-				seg, 
-				posTagger,
-				lemmatizer,
-				entityRecognizer,
-				parser,
+//				seg, 
+//				posTagger,
+//				lemmatizer,
+//				entityRecognizer,
+//				parser,
 //				coreferenceResolver,
 //				analyzer
 				stanfordAnnotator
