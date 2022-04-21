@@ -37,14 +37,6 @@ import org.apache.uima.resource.ResourceInitializationException;
 
 import de.tudarmstadt.ukp.dkpro.core.api.coref.type.CoreferenceChain;
 import de.tudarmstadt.ukp.dkpro.core.api.coref.type.CoreferenceLink;
-import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
-import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
-import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
-import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.PennTree;
-import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.chunk.Chunk;
-import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.dependency.Dependency;
-import de.tudarmstadt.ukp.dkpro.core.corenlp.CoreNlpCoreferenceResolver;
-
 import nu.xom.Builder;
 
 public class Analyzer extends JCasAnnotator_ImplBase {
@@ -68,9 +60,9 @@ public class Analyzer extends JCasAnnotator_ImplBase {
 	
 	@Override
 	public void process(JCas aJCas) throws AnalysisEngineProcessException {
-		DocumentMetaData meta = JCasUtil.selectSingle(aJCas, DocumentMetaData.class);
-		System.out.println("-Printing text-: "+ meta.getDocumentTitle());
-		sb1.append("-Printing text-: "+ meta.getDocumentTitle()+"\n");
+		String text = aJCas.getDocumentText();
+		System.out.println("-Printing text-: "+ text);
+		sb1.append("-Printing text-: "+ text+"\n");
 //		sb.append("-Printing text-: "+ meta.getDocumentTitle()+ "\n");
 		Collection<CoreferenceChain> coreferenceChain = JCasUtil.select(aJCas, CoreferenceChain.class);
 		

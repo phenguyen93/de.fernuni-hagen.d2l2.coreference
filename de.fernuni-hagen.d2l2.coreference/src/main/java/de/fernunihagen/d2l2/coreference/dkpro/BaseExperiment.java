@@ -10,18 +10,17 @@ import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.pipeline.SimplePipeline;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.dkpro.core.stanfordnlp.neural.StanfordCoreferenceResolver;
+import org.dkpro.core.corenlp.CoreNlpLemmatizer;
+import org.dkpro.core.corenlp.CoreNlpNamedEntityRecognizer;
+import org.dkpro.core.corenlp.CoreNlpPosTagger;
+import org.dkpro.core.corenlp.CoreNlpSegmenter;
+import org.dkpro.core.io.bincas.BinaryCasWriter;
+import org.dkpro.core.opennlp.OpenNlpChunker;
+import org.dkpro.core.opennlp.OpenNlpParser;
+import org.dkpro.core.stanfordnlp.StanfordCoreferenceResolver;
 
 import de.fernunihagen.d2l2.io.CorefReader;
-import de.tudarmstadt.ukp.dkpro.core.corenlp.CoreNlpCoreferenceResolver;
-import de.tudarmstadt.ukp.dkpro.core.corenlp.CoreNlpLemmatizer;
-import de.tudarmstadt.ukp.dkpro.core.corenlp.CoreNlpNamedEntityRecognizer;
-import de.tudarmstadt.ukp.dkpro.core.corenlp.CoreNlpPosTagger;
-import de.tudarmstadt.ukp.dkpro.core.corenlp.CoreNlpSegmenter;
-import de.tudarmstadt.ukp.dkpro.core.io.bincas.BinaryCasWriter;
-import de.tudarmstadt.ukp.dkpro.core.io.xmi.XmiWriter;
-import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpChunker;
-import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpParser;
+
 
 public class BaseExperiment {
 
