@@ -17,11 +17,9 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Progress;
 import org.apache.uima.util.ProgressImpl;
-import org.dkpro.tc.api.type.TextClassificationOutcome;
-import org.dkpro.tc.api.type.TextClassificationTarget;
+import org.dkpro.core.api.resources.ResourceUtils;
 
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
-import de.tudarmstadt.ukp.dkpro.core.api.resources.ResourceUtils;
 
 
 /*
@@ -104,7 +102,7 @@ public class CorefReader extends JCasCollectionReader_ImplBase {
 	@Override
 	public void getNext(JCas jcas) throws IOException, CollectionException {
 		QueueItem item = items.poll();
-		getLogger().debug(item);
+	//	getLogger().debug(item);
 		
 		try {
 			
@@ -121,13 +119,13 @@ public class CorefReader extends JCasCollectionReader_ImplBase {
 			throw new CollectionException(e);
 		}
 
-		TextClassificationTarget unit = new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length());
+		//TextClassificationTarget unit = new TextClassificationTarget(jcas, 0, jcas.getDocumentText().length());
 		// will add the token content as a suffix to the ID of this unit
-		unit.setSuffix(String.valueOf(item.getId()));
-		unit.addToIndexes();
-		TextClassificationOutcome outcome = new TextClassificationOutcome(jcas, 0, jcas.getDocumentText().length());
+		//unit.setSuffix(String.valueOf(item.getId()));
+		//unit.addToIndexes();
+		//TextClassificationOutcome outcome = new TextClassificationOutcome(jcas, 0, jcas.getDocumentText().length());
 		// TODO
-		outcome.addToIndexes();
+		//outcome.addToIndexes();
 		currentIndex++;
 	}
 	
