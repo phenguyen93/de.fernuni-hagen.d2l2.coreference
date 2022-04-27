@@ -46,16 +46,10 @@ public class BaseExperiment {
 		AnalysisEngineDescription parser = createEngineDescription(OpenNlpParser.class,OpenNlpParser.PARAM_LANGUAGE,"en");
 		AnalysisEngineDescription chunker = createEngineDescription(OpenNlpChunker.class,
 				OpenNlpChunker.PARAM_LANGUAGE, "en");
-		AnalysisEngineDescription coreferenceResolver = createEngineDescription(StanfordCoreferenceResolver.class);
+		AnalysisEngineDescription coreferenceResolver = createEngineDescription(StanfordCoreferenceNeuralSystem.class);
 //		AnalysisEngineDescription coreferenceResolver = createEngineDescription(CoreNlpCoreferenceResolver.class);		
 		AnalysisEngineDescription analyzer = createEngineDescription(Analyzer.class,Analyzer.PARAM_OUTPUT_FILE,outputPath);
-		AnalysisEngineDescription stanfordAnnotator = createEngineDescription(StanfordCoreferenceUIMAAnnotator.class,StanfordCoreferenceUIMAAnnotator.PARAM_OUTPUT_FILE,outputPath);
-		AnalysisEngineDescription binCasWriter = createEngineDescription(
-				BinaryCasWriter.class, 
-				BinaryCasWriter.PARAM_FORMAT, "6+",
-				BinaryCasWriter.PARAM_OVERWRITE, true,
-				BinaryCasWriter.PARAM_TARGET_LOCATION, "target/bincas"
-				);
+//		AnalysisEngineDescription stanfordAnnotator = createEngineDescription(StanfordCoreferenceUIMAAnnotator.class,StanfordCoreferenceUIMAAnnotator.PARAM_OUTPUT_FILE,outputPath);
 		SimplePipeline.runPipeline(reader, 
 				seg, 
 				posTagger,

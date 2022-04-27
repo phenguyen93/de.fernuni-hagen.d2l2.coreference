@@ -8,7 +8,6 @@ import java.util.Iterator;
 import java.util.Properties;
 
 import org.apache.commons.io.IOUtils;
-
 import edu.stanford.nlp.coref.CorefCoreAnnotations;
 import edu.stanford.nlp.coref.data.CorefChain;
 import edu.stanford.nlp.pipeline.Annotation;
