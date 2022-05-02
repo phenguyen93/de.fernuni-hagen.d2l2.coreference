@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.TreeMap;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.uima.UimaContext;
@@ -148,8 +149,7 @@ public class StanfordCoreferenceNeuralSystem
                 throws IOException
             {
                 String base = FilenameUtils.getFullPathNoEndSeparator(aUrl.toString()) + "/";
-                System.out.println("Base heer: -------------------->"+base);
-
+                
                 Properties props = new Properties();
                 props.setProperty("coref.algorithm", "neural");
          
@@ -163,7 +163,7 @@ public class StanfordCoreferenceNeuralSystem
                
                 try {
                     Coreferencer coref = new Coreferencer();
-                    coref.corefSystem = new CorefSystem(props);
+                    coref.corefSystem = new CorefSystemNew(props);
                     coref.mentionExtractor = new MentionExtractor(coref.corefSystem.dictionaries(),
                             coref.corefSystem.semantics());
                     return coref;
@@ -256,19 +256,11 @@ public class StanfordCoreferenceNeuralSystem
         // Reparsing only works when the full CoreNLP pipeline system is set up! Passing false here
         // disables reparsing.
         RuleBasedCorefMentionFinder finder = new RuleBasedCorefMentionFinder(false);
-        List<List<Mention>> allUnprocessedMentions = finder.extractPredictedMentions(document, 0,
-                coref.corefSystem.dictionaries());
 
-        // add the relevant info to mentions and order them for coref
-        Map<Integer, CorefChain> result;
-        try {
-            Document doc = coref.mentionExtractor.arrange(document, sentenceTokens, trees,
-                    allUnprocessedMentions);
-            result = coref.corefSystem.coref(doc);
-        }
-        catch (Exception e) {
-            throw new AnalysisEngineProcessException(e);
-        }
+
+        Map<Integer, CorefChain> result = new TreeMap<Integer, CorefChain>();
+
+
 
         for (CorefChain chain : result.values()) {
             CoreferenceLink last = null;
@@ -317,6 +309,6 @@ public class StanfordCoreferenceNeuralSystem
 
     private static class Coreferencer {
         MentionExtractor mentionExtractor;
-        CorefSystem corefSystem;
+        CorefSystemNew corefSystem;
     }
 }
