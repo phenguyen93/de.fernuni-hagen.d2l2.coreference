@@ -147,7 +147,7 @@ public class CorefSystemNew {
         // extract all possible mentions
         // this is created for each new annotation because it is not threadsafe
         RuleBasedCorefMentionFinder finder = new RuleBasedCorefMentionFinder(allowReparsing);
-        List<List<Mention>> allUnprocessedMentions = finder.extractPredictedMentions(annotation, 0, dictionaries);
+        //List<List<Mention>> allUnprocessedMentions = finder.extractPredictedMentions(annotation, 0, dictionaries);
 
         // add the relevant info to mentions and order them for coref
        

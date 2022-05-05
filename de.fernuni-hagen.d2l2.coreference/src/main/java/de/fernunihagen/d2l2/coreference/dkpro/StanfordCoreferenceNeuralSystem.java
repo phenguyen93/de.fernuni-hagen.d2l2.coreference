@@ -163,9 +163,6 @@ public class StanfordCoreferenceNeuralSystem
                
                 try {
                     Coreferencer coref = new Coreferencer();
-                    coref.corefSystem = new CorefSystemNew(props);
-                    coref.mentionExtractor = new MentionExtractor(coref.corefSystem.dictionaries(),
-                            coref.corefSystem.semantics());
                     return coref;
                 }
                 catch (Exception e) {
