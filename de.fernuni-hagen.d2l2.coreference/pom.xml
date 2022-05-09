@@ -54,6 +54,18 @@
 		</repositories>
 	
 	  <dependencies>
+	  	<!-- https://mvnrepository.com/artifact/de.tudarmstadt.ukp.dkpro.core/de.tudarmstadt.ukp.dkpro.core.corenlp-model-depparser-en-ud -->
+		<dependency>
+    		<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+    		<artifactId>de.tudarmstadt.ukp.dkpro.core.corenlp-model-depparser-en-ud</artifactId>
+   			 <version>20161213.1</version>
+		</dependency>
+	  	<dependency>
+  			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+  			<artifactId>de.tudarmstadt.ukp.dkpro.core.corenlp-model-depparser-de-ud</artifactId>
+  			<version>20161213.1</version>
+		</dependency>
+	  	
 	  	<dependency>
   			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
   			<artifactId>de.tudarmstadt.ukp.dkpro.core.stanfordnlp-model-coref-en-default</artifactId>

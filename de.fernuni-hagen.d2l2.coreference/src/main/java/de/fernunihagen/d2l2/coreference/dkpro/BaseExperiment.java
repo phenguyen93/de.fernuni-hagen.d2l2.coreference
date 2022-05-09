@@ -33,19 +33,20 @@ public class BaseExperiment {
 	}
 	private static void preprocess() throws ResourceInitializationException, UIMAException, IOException {
 
-		  //CorefExampleReader // TODO: adjust paths  
-		String documentPath ="D:\\HIWI\\coref\\ExampleTexts.csv";
-		String outputPath = "D:\\HIWI\\coref\\output\\dkpro\\CorefDeterministic.txt";
+		// TODO: adjust paths and param_Language 
+		String documentPath ="resources/ExampleDE.csv";
+		String outputPath = "D:\\HIWI\\CF\\outputDE.txt";
+//		String param_Language = "en";
+		String param_Language = "de";
+		
 		CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
-		  CorefReader.class, CorefReader.PARAM_INPUT_FILE, documentPath);
+		  CorefReader.class, CorefReader.PARAM_INPUT_FILE, documentPath,CorefReader.PARAM_LANGUAGE, param_Language);
 		AnalysisEngineDescription posTagger = createEngineDescription(CoreNlpPosTagger.class,
-					CoreNlpPosTagger.PARAM_LANGUAGE, "en");  						
-		AnalysisEngineDescription entityRecognizer = createEngineDescription(CoreNlpNamedEntityRecognizer.class,
-				CoreNlpNamedEntityRecognizer.PARAM_LANGUAGE,"en");		
-		AnalysisEngineDescription lemmatizer = createEngineDescription(CoreNlpLemmatizer.class);
+					CoreNlpPosTagger.PARAM_LANGUAGE, param_Language);  						
+
 		AnalysisEngineDescription seg = createEngineDescription(CoreNlpSegmenter.class,
-				CoreNlpSegmenter.PARAM_LANGUAGE, "en");
-		AnalysisEngineDescription depparser = createEngineDescription(CoreNlpDependencyParser.class,CoreNlpDependencyParser.PARAM_LANGUAGE,"en");
+				CoreNlpSegmenter.PARAM_LANGUAGE, param_Language);
+		AnalysisEngineDescription depparser = createEngineDescription(CoreNlpDependencyParser.class,CoreNlpDependencyParser.PARAM_LANGUAGE,param_Language);
 		AnalysisEngineDescription forwardLookingCenters = createEngineDescription(ForwardLookingCenters.class,ForwardLookingCenters.PARAM_OUTPUT_FILE,outputPath);
 		
 		
@@ -54,8 +55,6 @@ public class BaseExperiment {
 		SimplePipeline.runPipeline(reader, 
 				seg, 
 				posTagger,
-				lemmatizer,
-				entityRecognizer,
 				depparser,
 				forwardLookingCenters
 				);
