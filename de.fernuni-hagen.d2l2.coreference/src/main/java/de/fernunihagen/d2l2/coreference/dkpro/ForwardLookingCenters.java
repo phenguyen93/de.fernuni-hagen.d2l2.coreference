@@ -5,10 +5,13 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -20,6 +23,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 
 import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS;
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
+import de.tudarmstadt.ukp.dkpro.core.api.ner.type.NamedEntity;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.dependency.Dependency;
@@ -48,37 +52,113 @@ public class ForwardLookingCenters extends JCasAnnotator_ImplBase {
 		String content = meta.getDocumentTitle();
 		System.out.println("Printing essay: "+content);
 
+		//create a list of possible candidate (noun, pronoun, proper noun,...)
 		ArrayList<String> possibleCandidate = new ArrayList<String>();
 		Collection<Token> tokens = JCasUtil.select(aJCas, Token.class);
 		for (Token t: tokens) {
-			if(t.getPos().getCoarseValue().equals("PROPN")||t.getPos().getCoarseValue().equals("NOUN")||t.getPos().getCoarseValue().equals("PRON")) {
-				possibleCandidate.add(t.getCoveredText());
-//				System.out.println(t.getCoveredText() + " " + t.getPos().getCoarseValue() + " " + t.getLemmaValue());				
+			if(t.getPos().getCoarseValue()!=null) {
+				if(t.getPos().getCoarseValue().equals("PROPN")||t.getPos().getCoarseValue().equals("NOUN")||t.getPos().getCoarseValue().equals("PRON")) {
+					possibleCandidate.add(t.getCoveredText());
+//					System.out.println(t.getCoveredText() + " " + t.getPos().getCoarseValue() + " " + t.getLemmaValue());				
+				}
 			}
 //			System.out.println(t.getCoveredText() + " " + t.getPos().getCoarseValue() + " " + t.getLemmaValue());
 		}
 		
-		StringBuilder sb = new StringBuilder();
-		ArrayList<Dep> forwordLookingCenters = new ArrayList<>();
-		Collection<Dependency> dependencies = JCasUtil.select(aJCas, Dependency.class);
-		for (Dependency dep : dependencies){
-			if(!dep.getDependencyType().equals("punct"))
-				System.out.println(dep.getGovernor().getCoveredText() + " " + dep.getDependencyType() + " " + dep.getDependent().getCoveredText());			
-				sb.append(dep.getGovernor().getCoveredText() + " " + dep.getDependencyType() + " " + dep.getDependent().getCoveredText()+"\n");
-		}		
+		StringBuilder sb = new StringBuilder();		
+		Collection<Dependency> dependencies = JCasUtil.select(aJCas, Dependency.class);		
+		//create a list of forward-looking centers
+		ArrayList<Dep> forwardLookingCenters = new ArrayList<>();
 		for(String li : possibleCandidate) {
 			for (Dependency dep : dependencies){
-				if(li.equals(dep.getDependent().getCoveredText())) {
-					forwordLookingCenters.add(new Dep (dep.getDependent().getCoveredText(),dep.getDependencyType()));
-				}						
-//				System.out.println(dep.getGovernor().getCoveredText() + " " + dep.getDependencyType() + " " + dep.getDependent().getCoveredText()+" "+dep.getFlavor());			
+				if(!dep.getDependencyType().equals("compound")&&!dep.getDependencyType().equals("punct")) {
+					if(li.equals(dep.getDependent().getCoveredText())) {
+						forwardLookingCenters.add(new Dep (dep.getDependent().getCoveredText(),dep.getDependencyType()));
+					}
+				System.out.println(dep.getGovernor().getCoveredText() + " " + dep.getDependencyType() + " " + dep.getDependent().getCoveredText());
+				}
+									
 			}	
 		}
+		ArrayList<String> namedEntityList = new ArrayList<>();
+		Collection<NamedEntity> ners = JCasUtil.select(aJCas, NamedEntity.class);
+		for (NamedEntity namedEntity : ners) {
+			namedEntityList.add(namedEntity.getCoveredText());
+//			System.out.println(namedEntity.getValue()+" "+ namedEntity.getIdentifier()+" ");
+		}
+//		System.out.println(namedEntityList);
+		
+		//Named Entity bind together(90-136)
+		ArrayList<String> listNER = new ArrayList<>();
+		
+		for (Dependency dep : dependencies){
+			if(!dep.getDependencyType().equals("punct")) {
+				
+				if(dep.getDependencyType().equals("compound")) { 
+					listNER.add(dep.getDependent().getCoveredText());
+					listNER.add(dep.getGovernor().getCoveredText());
+				}			 
+				sb.append(dep.getGovernor().getCoveredText() + " " + dep.getDependencyType() + " " + dep.getDependent().getCoveredText()+"\n");		
+			}
+		}
+		ArrayList<String> listNERCopie = new ArrayList<String>();
+		for (String string : listNER) {
+			listNERCopie.add(string);
+		}
+		System.out.println(listNER);
+		for (int i = listNERCopie.size()-2; i >=0 ; i--) {
+			if(listNERCopie.get(listNERCopie.size()-1).equals(listNERCopie.get(i))) {
+				listNER.remove(i);
+			}
+		}
+		System.out.println(listNER);
+		String dependencyTypeOfNER = "";
+		for (Dependency dep : dependencies){
+			if(!listNER.isEmpty()) {
+				if(listNER.get(listNER.size()-1).equals(dep.getDependent().getCoveredText()))
+					dependencyTypeOfNER = dep.getDependencyType();
+			}
+			
+		}
+		String namedEntity = "";
+		for (String string : listNER) {
+			namedEntity += string +" ";
+		}
+		ArrayList<Dep> forwardLookingCentersCopie = new ArrayList<>();
+		for(Dep dep : forwardLookingCenters) {
+			forwardLookingCentersCopie.add(dep);
+		}
+//		System.out.println(namedEntity);
+//		System.out.println(dependencyTypeOfNER);
+		for (Dep dep : forwardLookingCentersCopie) {
+			for(String str : listNER) {
+				if(dep.getDependency(0).equals(str)) {
+					forwardLookingCenters.remove(dep);
+				}
+			}
+		}
+		forwardLookingCenters.add(new Dep(namedEntity,dependencyTypeOfNER));
+		
+		
+		// solve the problem  "and" and "or"
+		ArrayList<String> listConj = new ArrayList<>();
+		for (Dependency dep : dependencies){
+			if(!dep.getDependencyType().equals("punct")) {
+				
+				if(dep.getDependencyType().equals("conj")) { 
+					listNER.add(dep.getDependent().getCoveredText());
+					listNER.add(dep.getGovernor().getCoveredText());
+				}			 
+				sb.append(dep.getGovernor().getCoveredText() + " " + dep.getDependencyType() + " " + dep.getDependent().getCoveredText()+"\n");		
+			}
+		}
+		
 		ArrayList<Object[]> lo = new ArrayList<Object[]>();
 		StringBuilder sb1 = new StringBuilder();
 		StringBuilder sb2 = new StringBuilder();
 		StringBuilder sb3 = new StringBuilder();
-		for(Dep d : forwordLookingCenters) {
+		for(Dep d : forwardLookingCenters) {
+			System.out.println(d.getDependency(0)+" "+ d.getDependency(1));
 			if(d.getDependency(1).contains("subj")) {
 				sb1.append(d.getDependency(0)+" ");
 				lo.add(new Object[] {1,d.getDependency(0)});				
@@ -123,6 +203,40 @@ public class ForwardLookingCenters extends JCasAnnotator_ImplBase {
 		    System.out.println("written successfully on disk.");
 		}
 	}
+	// create text of unique word from a given text
+   	public static String uniqueText(String text) {
+   		String text1 = text.trim().replaceAll("\\s{2,}", " ");
+   		 String[] words = text1.split(" ");		         		        
+   		 HashSet<String> uniqueWords = new HashSet<String>(Arrays.asList(words));
+   		 int num = uniqueWords.size();
+   		 StringBuilder sb = new StringBuilder();
+
+   		 Iterator<String> iterator = uniqueWords.iterator();
+   		 String lastElement = "";
+   		 while(iterator.hasNext()){
+   	        lastElement = iterator.next();
+   		 }
+ 	  		 System.out.println(lastElement);
+   		 for(String a : uniqueWords) {
+   			 if(!a.equals(lastElement)) {
+   				 sb.append(a);
+   				sb.append(" ");
+   			 }else {
+   				 sb.append(a);
+   				 sb.append("");
+ 	  			 }
+   		 }
+   		 String temp= sb.toString();
+   		 String[] temp1 = temp.split(" ");
+   		 String[] temp2 = new String[temp1.length];
+   		temp2[0] = temp1[temp1.length-1];
+  		 for (int i = 1; i < temp1.length; i++) {
+			temp2[i] = temp1[i-1];							
+		}
+   		 return String.join(" ",temp2);
+   		 
+   	}
+	
 	class Dep{
 		private String[] dep = new String[2];
 		public Dep(String s1, String s2) {

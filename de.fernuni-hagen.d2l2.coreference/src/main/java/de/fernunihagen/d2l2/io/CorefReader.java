@@ -2,10 +2,12 @@ package de.fernunihagen.d2l2.io;
 
 import java.io.BufferedReader;
 import java.io.File;
-
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -62,10 +64,11 @@ public class CorefReader extends JCasCollectionReader_ImplBase {
 		
 		try {
 			inputFileURL = ResourceUtils.resolveLocation(inputFileString, this, aContext);
-			File file = new File(inputFileString);
-			FileReader fr = new FileReader(file);
-			BufferedReader br = new BufferedReader(fr);
-			String line = " ";
+			//UTF-8 for German
+			Charset inputCharset = Charset.forName("ISO-8859-1");
+        	BufferedReader br = new BufferedReader(new InputStreamReader(
+        		    new FileInputStream(inputFileString), inputCharset)); 
+        	String line = "";
 			String[] tempArr;
 			while ((line = br.readLine()) != null){
 				tempArr = line.split(";");

@@ -20,7 +20,9 @@ import org.dkpro.core.corenlp.CoreNlpSegmenter;
 import org.dkpro.core.matetools.MateParser;
 import org.dkpro.core.opennlp.OpenNlpChunker;
 import org.dkpro.core.opennlp.OpenNlpParser;
+import org.dkpro.core.opennlp.OpenNlpPosTagger;
 import org.dkpro.core.stanfordnlp.StanfordCoreferenceResolver;
+import org.dkpro.core.treetagger.TreeTaggerPosTagger;
 
 import de.fernunihagen.d2l2.io.CorefReader;
 
@@ -34,19 +36,21 @@ public class BaseExperiment {
 	private static void preprocess() throws ResourceInitializationException, UIMAException, IOException {
 
 		// TODO: adjust paths and param_Language 
-		String documentPath ="resources/ExampleDE.csv";
-		String outputPath = "D:\\HIWI\\CF\\outputDE.txt";
-//		String param_Language = "en";
-		String param_Language = "de";
+		String documentPath ="resources/Example.csv";
+		String outputPath = "D:\\HIWI\\CF\\output.txt";
+		String param_Language = "en";
+//		String param_Language = "de";
 		
 		CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
 		  CorefReader.class, CorefReader.PARAM_INPUT_FILE, documentPath,CorefReader.PARAM_LANGUAGE, param_Language);
 		AnalysisEngineDescription posTagger = createEngineDescription(CoreNlpPosTagger.class,
-					CoreNlpPosTagger.PARAM_LANGUAGE, param_Language);  						
+				CoreNlpPosTagger.PARAM_LANGUAGE, param_Language);  						
 
 		AnalysisEngineDescription seg = createEngineDescription(CoreNlpSegmenter.class,
 				CoreNlpSegmenter.PARAM_LANGUAGE, param_Language);
-		AnalysisEngineDescription depparser = createEngineDescription(CoreNlpDependencyParser.class,CoreNlpDependencyParser.PARAM_LANGUAGE,param_Language);
+		AnalysisEngineDescription ner = createEngineDescription(CoreNlpNamedEntityRecognizer.class,
+				CoreNlpNamedEntityRecognizer.PARAM_LANGUAGE, param_Language);
+		AnalysisEngineDescription depparser = createEngineDescription(CoreNlpDependencyParser.class,CoreNlpDependencyParser.PARAM_LANGUAGE,param_Language,CoreNlpDependencyParser.PARAM_VARIANT,"ud");
 		AnalysisEngineDescription forwardLookingCenters = createEngineDescription(ForwardLookingCenters.class,ForwardLookingCenters.PARAM_OUTPUT_FILE,outputPath);
 		
 		
@@ -55,6 +59,7 @@ public class BaseExperiment {
 		SimplePipeline.runPipeline(reader, 
 				seg, 
 				posTagger,
+				ner,
 				depparser,
 				forwardLookingCenters
 				);

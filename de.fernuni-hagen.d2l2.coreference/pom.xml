@@ -1,4 +1,4 @@
-	
+ 	
 	<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	  <modelVersion>4.0.0</modelVersion>
@@ -65,7 +65,18 @@
   			<artifactId>de.tudarmstadt.ukp.dkpro.core.corenlp-model-depparser-de-ud</artifactId>
   			<version>20161213.1</version>
 		</dependency>
-	  	
+		<dependency>
+  			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+  			<artifactId>de.tudarmstadt.ukp.dkpro.core.opennlp-model-tagger-de-maxent</artifactId>
+ 			<version>20120616.1</version>
+		</dependency>
+		<dependency>
+  			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+  			<artifactId>de.tudarmstadt.ukp.dkpro.core.matetools-model-tagger-de-tiger</artifactId>
+ 			<version>20121024.1</version>
+		</dependency>
+		
+		
 	  	<dependency>
   			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
   			<artifactId>de.tudarmstadt.ukp.dkpro.core.stanfordnlp-model-coref-en-default</artifactId>
