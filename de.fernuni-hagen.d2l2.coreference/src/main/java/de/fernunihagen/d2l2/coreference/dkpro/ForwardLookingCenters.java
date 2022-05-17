@@ -59,7 +59,7 @@ public class ForwardLookingCenters extends JCasAnnotator_ImplBase {
 			if(t.getPos().getCoarseValue()!=null) {
 				if(t.getPos().getCoarseValue().equals("PROPN")||t.getPos().getCoarseValue().equals("NOUN")||t.getPos().getCoarseValue().equals("PRON")) {
 					possibleCandidate.add(t.getCoveredText());
-//					System.out.println(t.getCoveredText() + " " + t.getPos().getCoarseValue() + " " + t.getLemmaValue());				
+					System.out.println(t.getCoveredText() + " " + t.getPos().getCoarseValue() + " " + t.getLemmaValue());				
 				}
 			}
 //			System.out.println(t.getCoveredText() + " " + t.getPos().getCoarseValue() + " " + t.getLemmaValue());
@@ -74,10 +74,8 @@ public class ForwardLookingCenters extends JCasAnnotator_ImplBase {
 				if(!dep.getDependencyType().equals("compound")&&!dep.getDependencyType().equals("punct")) {
 					if(li.equals(dep.getDependent().getCoveredText())) {
 						forwardLookingCenters.add(new Dep (dep.getDependent().getCoveredText(),dep.getDependencyType()));
-					}
-				System.out.println(dep.getGovernor().getCoveredText() + " " + dep.getDependencyType() + " " + dep.getDependent().getCoveredText());
-				}
-									
+					}				
+				}			
 			}	
 		}
 		ArrayList<String> namedEntityList = new ArrayList<>();
@@ -100,18 +98,17 @@ public class ForwardLookingCenters extends JCasAnnotator_ImplBase {
 				}			 
 				sb.append(dep.getGovernor().getCoveredText() + " " + dep.getDependencyType() + " " + dep.getDependent().getCoveredText()+"\n");		
 			}
+			System.out.println(dep.getGovernor().getCoveredText() + " " + dep.getDependencyType() + " " + dep.getDependent().getCoveredText());		
 		}
 		ArrayList<String> listNERCopie = new ArrayList<String>();
 		for (String string : listNER) {
 			listNERCopie.add(string);
 		}
-		System.out.println(listNER);
 		for (int i = listNERCopie.size()-2; i >=0 ; i--) {
 			if(listNERCopie.get(listNERCopie.size()-1).equals(listNERCopie.get(i))) {
 				listNER.remove(i);
 			}
 		}
-		System.out.println(listNER);
 		String dependencyTypeOfNER = "";
 		for (Dependency dep : dependencies){
 			if(!listNER.isEmpty()) {
@@ -128,8 +125,7 @@ public class ForwardLookingCenters extends JCasAnnotator_ImplBase {
 		for(Dep dep : forwardLookingCenters) {
 			forwardLookingCentersCopie.add(dep);
 		}
-//		System.out.println(namedEntity);
-//		System.out.println(dependencyTypeOfNER);
+
 		for (Dep dep : forwardLookingCentersCopie) {
 			for(String str : listNER) {
 				if(dep.getDependency(0).equals(str)) {
@@ -141,24 +137,75 @@ public class ForwardLookingCenters extends JCasAnnotator_ImplBase {
 		
 		
 		// solve the problem  "and" and "or"
-		ArrayList<String> listConj = new ArrayList<>();
+		Set<String> setConj = new HashSet<>();
 		for (Dependency dep : dependencies){
 			if(!dep.getDependencyType().equals("punct")) {
 				
-				if(dep.getDependencyType().equals("conj")) { 
-					listNER.add(dep.getDependent().getCoveredText());
-					listNER.add(dep.getGovernor().getCoveredText());
+				if(dep.getDependencyType().contains("conj")) { 
+					setConj.add(dep.getDependent().getCoveredText());
+					setConj.add(dep.getGovernor().getCoveredText());
 				}			 
-				sb.append(dep.getGovernor().getCoveredText() + " " + dep.getDependencyType() + " " + dep.getDependent().getCoveredText()+"\n");		
 			}
 		}
-		
+		//convert set to arraylist
+		ArrayList<String> listConj = new ArrayList<>();
+		for(String str : setConj) {
+			listConj.add(str);
+		}
+		System.out.println(listConj);
+		String dependencyTypeForConj = "";
+		String firstElementOfCompound = "";
+		for (Dependency dep : dependencies){
+			if(dep.getDependencyType().equals("conj")){
+				firstElementOfCompound= dep.getGovernor().getCoveredText();
+			}
+			
+		}
+		for (Dependency dep : dependencies){
+			if(dep.getDependent().getCoveredText().equals(firstElementOfCompound) ){
+				dependencyTypeForConj = dep.getDependencyType();
+			}			
+		}
+		System.out.println(dependencyTypeForConj);
+		for (Dep dep : forwardLookingCentersCopie) {
+			for(String str : listConj) {
+				if(dep.getDependency(0).equals(str)) {
+					forwardLookingCenters.remove(dep);
+				}
+			}
+		}
+		for(String str : listConj) {
+			forwardLookingCenters.add(new Dep(str,dependencyTypeForConj));
+		}
+		//solve the subordinate clause
+		String rootVerb = "";
+		for(Dependency dep : dependencies) {
+			if(dep.getDependencyType().equals("root")){
+				rootVerb = dep.getDependent().getCoveredText();
+			}
+		}
+		ArrayList<String> listFalseNsubj = new ArrayList<>();
+		for(Dependency dep : dependencies) {
+			if(dep.getDependencyType().equals("nsubj")&&!dep.getGovernor().getCoveredText().equals(rootVerb)) {				
+				listFalseNsubj.add(dep.getDependent().getCoveredText());			
+			}
+		}
+		System.out.println(listFalseNsubj);
+		for (Dep dep : forwardLookingCentersCopie) {
+			for(String str : listFalseNsubj) {
+				if(dep.getDependency(0).equals(str)) {
+					forwardLookingCenters.remove(dep);
+				}
+			}
+		}
+		for(String str : listFalseNsubj) {
+			forwardLookingCenters.add(new Dep(str,"other"));
+		}
 		ArrayList<Object[]> lo = new ArrayList<Object[]>();
 		StringBuilder sb1 = new StringBuilder();
 		StringBuilder sb2 = new StringBuilder();
 		StringBuilder sb3 = new StringBuilder();
 		for(Dep d : forwardLookingCenters) {
-			System.out.println(d.getDependency(0)+" "+ d.getDependency(1));
 			if(d.getDependency(1).contains("subj")) {
 				sb1.append(d.getDependency(0)+" ");
 				lo.add(new Object[] {1,d.getDependency(0)});				
