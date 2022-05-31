@@ -71,7 +71,9 @@ public class CorefReader extends JCasCollectionReader_ImplBase {
         	String line = "";
 			String[] tempArr;
 			while ((line = br.readLine()) != null){
+				
 				tempArr = line.split(";");
+				System.out.println(line);
 				String id =tempArr[0];
 				String text = tempArr[1];
 				items.add(new QueueItem(id, text));

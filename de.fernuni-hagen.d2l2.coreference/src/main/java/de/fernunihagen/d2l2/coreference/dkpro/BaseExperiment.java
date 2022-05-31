@@ -44,13 +44,17 @@ public class BaseExperiment {
 		CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
 		  CorefReader.class, CorefReader.PARAM_INPUT_FILE, documentPath,CorefReader.PARAM_LANGUAGE, param_Language);
 		AnalysisEngineDescription posTagger = createEngineDescription(CoreNlpPosTagger.class,
-				CoreNlpPosTagger.PARAM_LANGUAGE, param_Language);  						
-
+				CoreNlpPosTagger.PARAM_LANGUAGE, param_Language);  								
 		AnalysisEngineDescription seg = createEngineDescription(CoreNlpSegmenter.class,
 				CoreNlpSegmenter.PARAM_LANGUAGE, param_Language);
+		AnalysisEngineDescription lemma = createEngineDescription(CoreNlpLemmatizer.class);
+		AnalysisEngineDescription parser = createEngineDescription(CoreNlpParser.class,
+				CoreNlpParser.PARAM_LANGUAGE, param_Language,CoreNlpParser.PARAM_VARIANT,"factored");
 		AnalysisEngineDescription ner = createEngineDescription(CoreNlpNamedEntityRecognizer.class,
 				CoreNlpNamedEntityRecognizer.PARAM_LANGUAGE, param_Language);
 		AnalysisEngineDescription depparser = createEngineDescription(CoreNlpDependencyParser.class,CoreNlpDependencyParser.PARAM_LANGUAGE,param_Language,CoreNlpDependencyParser.PARAM_VARIANT,"ud");
+		AnalysisEngineDescription corefResolution = createEngineDescription(CoreNlpCoreferenceResolver.class);
+		AnalysisEngineDescription cr = createEngineDescription(CoreferenceResolution.class);
 		AnalysisEngineDescription forwardLookingCenters = createEngineDescription(ForwardLookingCenters.class,ForwardLookingCenters.PARAM_OUTPUT_FILE,outputPath);
 		
 		
@@ -59,8 +63,12 @@ public class BaseExperiment {
 		SimplePipeline.runPipeline(reader, 
 				seg, 
 				posTagger,
+				lemma,
+				parser,
 				ner,
 				depparser,
+				corefResolution,
+//				cr
 				forwardLookingCenters
 				);
 	}

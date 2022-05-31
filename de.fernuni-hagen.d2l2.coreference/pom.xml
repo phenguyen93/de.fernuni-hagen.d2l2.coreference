@@ -15,7 +15,7 @@
 	    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	    <maven.compiler.source>1.8</maven.compiler.source>
 	    <maven.compiler.target>1.8</maven.compiler.target>
-		<uima.version>3.1.0</uima.version>
+		<uima.version>2.11.0</uima.version>
 		<dkpro.version>2.2.0</dkpro.version>
 	  </properties>
 	
@@ -75,7 +75,11 @@
   			<artifactId>de.tudarmstadt.ukp.dkpro.core.matetools-model-tagger-de-tiger</artifactId>
  			<version>20121024.1</version>
 		</dependency>
-		
+		<dependency>
+  			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+  			<artifactId>de.tudarmstadt.ukp.dkpro.core.stanfordnlp-model-parser-en-factored</artifactId>
+  			<version>20150129.1</version>
+		</dependency>
 		
 	  	<dependency>
   			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
@@ -119,11 +123,19 @@
 			<artifactId>dkpro-core-corenlp-gpl</artifactId>
 			<version>${dkpro.version}</version>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimafit-core</artifactId>
-			<version>${uima.version}</version>
+			<version>3.2.0</version>
 		</dependency>
+<!--		
+		<dependency>
+  			<groupId>org.apache.uima</groupId>
+  			<artifactId>uimaj-core</artifactId>
+  			<version>2.11.0</version>
+		</dependency>
+-->		
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter</artifactId>
